@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1709095011 source:c:\users\admin\onedrive\documents\sdl\one\main.cpp
+	<iostream>
+
+1709686610 source:c:\users\admin\onedrive\documents\sdl\one\sdl2.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+
