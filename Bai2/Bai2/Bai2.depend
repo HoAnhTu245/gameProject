@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1711393876 source:c:\users\admin\onedrive\documents\code\gameproject\bai2\bai2\sdl2_img.cpp
+1711423656 source:c:\users\admin\onedrive\documents\code\gameproject\bai2\bai2\sdl2_img.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
