@@ -59,6 +59,18 @@ struct Graphics
         SDL_DestroyWindow(window);
         SDL_Quit();
     }
+    void drawRect(int x, int y, int h, int w)
+    {
+        SDL_Rect rect;
+        rect.x = x;
+        rect.y = y;
+        rect.h = h;
+        rect.w = w;
+        SDL_SetRenderDrawColor(renderer, 255, 300, 0, 255);
+        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderPresent(renderer);
+    }
+
 };
 
 

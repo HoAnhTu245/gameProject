@@ -8,40 +8,37 @@ int main(int argc, char* argv[])
 {
     Graphics graphics;
     graphics.init();
-
-    SDL_Rect rect;
-    rect.x=100;
-    rect.y=100;
-    rect.h=100;
-    rect.w=100;
-    SDL_SetRenderDrawColor(graphics.renderer, 255, 200, 300, 4);
-    SDL_RenderFillRect(graphics.renderer, &rect);
-    SDL_RenderPresent(graphics.renderer);
-
-
-    SDL_Event event;
+    SDL_Event e;
     int x, y;
-    while (true) {
-
+    graphics.drawRect(300, 350, 450, 250);
+    while(true)
+    {
         SDL_GetMouseState(&x, &y);
-        //cout << ((x > 100 && y > 100 && x < 200 && y < 200) ? "In\n" : "Out\n");
-
-        SDL_PollEvent(&event);
-        switch (event.type) {
-            case SDL_QUIT:
-                 exit(0);
-                 break;
+        SDL_PollEvent(&e);
+        switch(e.type)
+        {
+            case SDL_QUIT: case SDL_KEYDOWN:
+                exit(0);
+                break;
             case SDL_MOUSEBUTTONDOWN:
-                 cerr << "Down at (" << x << ", " << y << ")\n";
-                 break;
+                cout << "down at: " << x << ", " << y << endl;
+                break;
             case SDL_MOUSEBUTTONUP:
-                 cerr << "Up at (" << x << ", " << y << ")\n";
-                 break;
-
+                cout << "up at: " << x << ", " << y << endl;
+                break;
         }
-        SDL_Delay(100);
-    }
 
+        /*switch(e.button)
+        {
+            case SDL_BUTTON_LEFT
+                cout << "left" << endl;
+                break;
+            case SDL_BUTTON_RIGHT:
+                cout << "right" << endl;
+                break;
+
+        }*/
+    }
     graphics.quit();
     return 0;
 }
