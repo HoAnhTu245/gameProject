@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1711620664 source:c:\users\admin\onedrive\documents\code\gameproject\bai4\mouseevent.cpp
+1711635959 source:c:\users\admin\onedrive\documents\code\gameproject\bai4\mouseevent.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
 	"Graphics.h"
 
-1711615693 c:\users\admin\onedrive\documents\code\gameproject\bai4\graphics.h
+1711636139 c:\users\admin\onedrive\documents\code\gameproject\bai4\graphics.h
 	<SDL.h>
 	<SDL_image.h>
 	"defs.h"

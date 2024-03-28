@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "defs.h"
-
+using namespace std;
 struct Graphics
 {
     SDL_Window* window;
@@ -66,9 +66,42 @@ struct Graphics
         rect.y = y;
         rect.h = h;
         rect.w = w;
-        SDL_SetRenderDrawColor(renderer, 255, 300, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 235, 295, 335, 255);
         SDL_RenderFillRect(renderer, &rect);
         SDL_RenderPresent(renderer);
+    }
+    void mouseEvent()
+    {
+        SDL_Event e;
+        int x, y;
+        while(true)
+        {
+            SDL_GetMouseState(&x, &y);
+            SDL_PollEvent(&e);
+            switch(e.type)
+            {
+                case SDL_QUIT: case SDL_KEYDOWN:
+                    exit(0);
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    cout << "down at: " << x << ", " << y << endl;
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    cout << "up at: " << x << ", " << y << endl;
+                    break;
+            }
+
+            /*switch(e.button)
+            {
+                case SDL_BUTTON_LEFT
+                    cout << "left" << endl;
+                    break;
+                case SDL_BUTTON_RIGHT:
+                    cout << "right" << endl;
+                    break;
+
+            }*/
+        }
     }
 
 };
