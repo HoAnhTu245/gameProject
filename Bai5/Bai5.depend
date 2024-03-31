@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1711868638 source:c:\users\admin\onedrive\documents\code\gameproject\bai5\tictactoe.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	"graphics.h"
+	"defs.h"
+	"logic.h"
+
+1711868744 c:\users\admin\onedrive\documents\code\gameproject\bai5\graphics.h
+	<SDL.h>
+	<SDL_image.h>
+	"defs.h"
+	"logic.h"
+
+1711867692 c:\users\admin\onedrive\documents\code\gameproject\bai5\defs.h
+
+1711869457 c:\users\admin\onedrive\documents\code\gameproject\bai5\logic.h
+
