@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
                     quit = true;
             }
         }
-        SDL_PollEvent(&event);
+        //SDL_PollEvent(&event);
         if(event.type == SDL_QUIT) quit = true;
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
         if(currentKeyStates[SDL_SCANCODE_UP]) cout << "up ";
