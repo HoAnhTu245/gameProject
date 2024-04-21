@@ -25,11 +25,12 @@ int main(int argc, char *argv[])
         while( SDL_PollEvent( &e ) != 0 ) {
             if( e.type == SDL_QUIT ) quit = true;
         }
-        man.tick(); //bird.tick();
+        //man.tick();
+        bird.tick();
 
         graphics.prepareScene();
         graphics.render(100, 100, man);
-        //graphics.render(150, 100, bird);
+        graphics.render(150, 100, bird);
         graphics.presentScene();
         SDL_Delay(100);
     }

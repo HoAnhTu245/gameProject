@@ -11,5 +11,6 @@ int main(int argc, char* argv[])
     graphics.drawRect(300, 200, 450, 250);
     graphics.mouseEvent();
     graphics.quit();
+    
     return 0;
 }
