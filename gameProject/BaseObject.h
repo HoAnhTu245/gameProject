@@ -1,14 +1,19 @@
 #ifndef BASEOBJECT_H_INCLUDED
 #define BASEOBJECT_H_INCLUDED
 
-
-#define INITIAL_SPEED 5
-#include <SDL.h>
-#include <SDL_image.h>
 #include "CommonFunction.h"
-#include <bits/stdc++.h>
 
 using namespace std;
+
+
+struct Plane
+{
+    SDL_Texture* texture;
+    void init(SDL_Texture* _texture)
+    {
+        texture = _texture;
+    }
+};
 
 struct Mouse {
     int x, y;
@@ -34,40 +39,31 @@ struct Mouse {
         dy = 0;
         dx = speed;
     }
+    void remain(){
+        dx = 0;
+        dy = 0;
+    }
 };
 bool gameOver(const Mouse& mouse) {
         return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
            mouse.y < 0 || mouse.y >= SCREEN_HEIGHT;
 }
 
-
-struct Sprite {
+struct Bullet
+{
+    int x_;
+    int y_ ;
+    int is_move;
     SDL_Texture* texture;
-    std::vector<SDL_Rect> clips;
-    int currentFrame = 0;
-
-    void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
+    void init(SDL_Texture* _texture)
+    {
         texture = _texture;
-
-        SDL_Rect clip;
-        cout << frames << endl;
-        for (int i = 0; i < frames; i++) {
-            clip.x = _clips[i][0];
-            clip.y = _clips[i][1];
-            clip.w = _clips[i][2];
-            clip.h = _clips[i][3];
-            clips.push_back(clip);
-        }
     }
-    void tick() {
-        currentFrame = (currentFrame + 1) % clips.size();
-        cout << currentFrame << endl;
-    }
-    const SDL_Rect* getCurrentClip() const {
-        return &(clips[currentFrame]);
+    bool check()
+    {
+        return y_ > 0;
     }
 };
-
 
 struct ScrollingBackground {
     SDL_Texture* texture;
@@ -117,6 +113,16 @@ struct Graphics {
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        //Init SDL_mixer
+        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+        {
+            logErrorAndExit( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+        }
+    }
+    void clear_()
+    {
+        SDL_RenderClear(renderer);
     }
 
 	void prepareScene(SDL_Texture * background = nullptr)
@@ -144,12 +150,10 @@ struct Graphics {
     void renderTexture(SDL_Texture *texture, int x, int y)
     {
         SDL_Rect dest;
-
         dest.x = x;
         dest.y = y;
         SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
-        cout << dest.w << " " << dest.h;
-        SDL_RenderCopy(renderer, texture, NULL, &dest);
+        SDL_RenderCopy(renderer, texture, NULL , &dest);
     }
 
     void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
@@ -177,13 +181,93 @@ struct Graphics {
         renderTexture(background.texture, background.scrollingOffset, 0);
         renderTexture(background.texture, background.scrollingOffset - background.width, 0);
     }
-    void render(const Mouse& mouse , const Sprite& sprite) {
+    void render(const Mouse& mouse, const Plane& plane) {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(plane.texture, NULL, NULL, &dest.w, &dest.h);
 
-        const SDL_Rect* clip = sprite.getCurrentClip();
-        cout << clip->x << " " << clip->y << " " << clip->w << " " << clip->h << endl;
-        SDL_Rect renderQuad = {mouse.x, mouse.y, clip->w, clip->h};
-        SDL_RenderCopy(renderer, sprite.texture, clip, &renderQuad);
+        SDL_Rect renderQuad = {mouse.x, mouse.y, dest.w, dest.h};
+        SDL_RenderCopy(renderer, plane.texture , &dest, &renderQuad);
     }
+    void render(const Bullet& bullet)
+    {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(bullet.texture, NULL, NULL, &dest.w, &dest.h);
+
+        SDL_Rect renderQuad = {bullet.x_, bullet.y_, dest.w, dest.h};
+        SDL_RenderCopy(renderer, bullet.texture , &dest, &renderQuad);
+    }
+
+
+
+    Mix_Music *loadMusic(const char* path)
+    {
+        Mix_Music *gMusic = Mix_LoadMUS(path);
+        if (gMusic == nullptr) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
+                           "Could not load music! SDL_mixer Error: %s", Mix_GetError());
+        }
+        return gMusic;
+    }
+    void play(Mix_Music *gMusic)
+    {
+        if (gMusic == nullptr) return;
+
+        if (Mix_PlayingMusic() == 0) {
+            Mix_PlayMusic( gMusic, -1 );
+        }
+        else if( Mix_PausedMusic() == 1 ) {
+            Mix_ResumeMusic();
+        }
+    }
+
+    Mix_Chunk* loadSound(const char* path) {
+        Mix_Chunk* gChunk = Mix_LoadWAV(path);
+        if (gChunk == nullptr) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
+                       "Could not load sound! SDL_mixer Error: %s", Mix_GetError());
+        }
+    }
+    void play(Mix_Chunk* gChunk) {
+        if (gChunk != nullptr) {
+            Mix_PlayChannel( -1, gChunk, 0 );
+        }
+    }
+
+
+
+
+
+
+
+    TTF_Font* loadFont(const char* path, int size)
+    {
+        TTF_Font* gFont = TTF_OpenFont( path, size );
+        if (gFont == nullptr) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Load font %s", TTF_GetError());
+        }
+    }
+
+    SDL_Texture* renderText(const char* text, TTF_Font* font, SDL_Color textColor)
+    {
+        SDL_Surface* textSurface = TTF_RenderText_Solid( font, text, textColor );
+        if( textSurface == nullptr ) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Render text surface %s", TTF_GetError());
+            return nullptr;
+        }
+
+        SDL_Texture* texture = SDL_CreateTextureFromSurface( renderer, textSurface );
+        if( texture == nullptr ) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Create texture from text %s", SDL_GetError());
+        }
+
+        SDL_FreeSurface( textSurface );
+        return texture;
+    }
+
 };
 
 #endif // BASEOBJECT_H_INCLUDED

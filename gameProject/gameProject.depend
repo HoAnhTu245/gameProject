@@ -1,21 +1,22 @@
 # depslib dependency file v1.0
-1713726007 source:c:\users\admin\onedrive\documents\code\gameproject\gameproject\main.cpp
-	<iostream>
-	<SDL.h>
-	<SDL_image.h>
+1713809043 source:c:\users\admin\onedrive\documents\code\gameproject\gameproject\main.cpp
 	"BaseObject.h"
 	"CommonFunction.h"
-
-1713726007 c:\users\admin\onedrive\documents\code\gameproject\gameproject\commonfunction.h
 	<bits/stdc++.h>
 	<windows.h>
-	<string>
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_mixer.h>
+	<SDL_ttf.h>
 
-1713725553 c:\users\admin\onedrive\documents\code\gameproject\gameproject\baseobject.h
+1713806047 c:\users\admin\onedrive\documents\code\gameproject\gameproject\commonfunction.h
+	<bits/stdc++.h>
+	<windows.h>
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_mixer.h>
+	<SDL_ttf.h>
+
+1713808943 c:\users\admin\onedrive\documents\code\gameproject\gameproject\baseobject.h
 	"CommonFunction.h"
-	<bits/stdc++.h>
 
