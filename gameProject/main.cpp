@@ -52,9 +52,6 @@ int main(int argc, char *argv[])
             if( e.type == SDL_QUIT) quit = true;
         }
 
-        bullet.x_ = mouse.x + 54;
-        bullet.y_ = mouse.y - 20;
-
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
         if (currentKeyStates[SDL_SCANCODE_UP]) mouse.turnNorth();
@@ -64,31 +61,30 @@ int main(int argc, char *argv[])
         else mouse.remain();
 
         mouse.move();
+        bullet.x_ = mouse.x + 54;
+        bullet.y_ = mouse.y - 20;
 
         if (currentKeyStates[SDL_SCANCODE_SPACE]) {
             graphics.play(gJump);
             while(bullet.y_ > 0){
-                /*SDL_Texture* bulletTexture = graphics.loadTexture(BULLET_IMG);
-                graphics.prepareScene();
-                graphics.renderTexture(bulletTexture, bullet.x_, bullet.y_);
-                graphics.presentScene();*/
+                graphics.clear_();
+                background.scroll(1);
+                graphics.render(background);
+                graphics.render(mouse, pilot);
                 graphics.render(bullet);
                 graphics.presentScene();
-                graphics.clear_();
-                bullet.y_ -= 10;
+
+                bullet.y_ -= 30;
             }
         }
 
         graphics.render(mouse, pilot);
-
         graphics.presentScene();
-
-
 
         background.scroll(1);
         graphics.render(background);
 
-        SDL_Delay(1);
+        SDL_Delay(10);
     }
     if (gMusic != nullptr) Mix_FreeMusic( gMusic );
     if (gJump != nullptr) Mix_FreeChunk(gJump);

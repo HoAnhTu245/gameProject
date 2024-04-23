@@ -59,11 +59,9 @@ struct Bullet
     {
         texture = _texture;
     }
-    bool check()
-    {
-        return y_ > 0;
-    }
+
 };
+vector <Bullet*> bullet_list;
 
 struct ScrollingBackground {
     SDL_Texture* texture;
@@ -200,8 +198,6 @@ struct Graphics {
         SDL_Rect renderQuad = {bullet.x_, bullet.y_, dest.w, dest.h};
         SDL_RenderCopy(renderer, bullet.texture , &dest, &renderQuad);
     }
-
-
 
     Mix_Music *loadMusic(const char* path)
     {
