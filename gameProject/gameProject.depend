@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1713859512 source:c:\users\admin\onedrive\documents\code\gameproject\gameproject\main.cpp
+1716052590 source:c:\users\admin\onedrive\documents\code\gameproject\gameproject\main.cpp
 	"BaseObject.h"
 	"CommonFunction.h"
+	"MainObject.h"
 	<bits/stdc++.h>
 	<windows.h>
 	<SDL.h>
@@ -9,7 +10,7 @@
 	<SDL_mixer.h>
 	<SDL_ttf.h>
 
-1713806047 c:\users\admin\onedrive\documents\code\gameproject\gameproject\commonfunction.h
+1716022070 c:\users\admin\onedrive\documents\code\gameproject\gameproject\commonfunction.h
 	<bits/stdc++.h>
 	<windows.h>
 	<SDL.h>
@@ -17,6 +18,32 @@
 	<SDL_mixer.h>
 	<SDL_ttf.h>
 
-1713852960 c:\users\admin\onedrive\documents\code\gameproject\gameproject\baseobject.h
+1716051016 c:\users\admin\onedrive\documents\code\gameproject\gameproject\baseobject.h
 	"CommonFunction.h"
+	"MainObject.h"
+
+1716052823 c:\users\admin\onedrive\documents\code\gameproject\gameproject\mainobject.h
+	"CommonFunction.h"
+	"BaseObject.h"
+
+1715964556 c:\users\admin\onedrive\documents\code\gameproject\gameproject\game.h
+	"BaseObject.h"
+	"MainObject.h"
+	"ThreatObject.h"
+	"Music.h"
+	"Menu.h"
+	"SaveObject.h"
+	"CommonFunction.h"
+
+1715924986 c:\users\admin\onedrive\documents\code\gameproject\gameproject\threatobject.h
+	"BaseObject.h"
+
+1715924732 c:\users\admin\onedrive\documents\code\gameproject\gameproject\music.h
+	"BaseObject.h"
+
+1715962357 c:\users\admin\onedrive\documents\code\gameproject\gameproject\menu.h
+
+1715962357 c:\users\admin\onedrive\documents\code\gameproject\gameproject\saveobject.h
+	<iostream>
+	<fstream>
 

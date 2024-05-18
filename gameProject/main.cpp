@@ -1,5 +1,6 @@
 #include "BaseObject.h"
 #include "CommonFunction.h"
+#include "MainObject.h"
 #include <bits/stdc++.h>
 #include <windows.h>
 #include <SDL.h>
@@ -28,63 +29,76 @@ int main(int argc, char *argv[])
     Plane pilot;
     SDL_Texture* pilotTexture = graphics.loadTexture(PLANE_IMG);
     pilot.init(pilotTexture);
+    pilot.renderer = graphics.renderer;
 
-    Bullet bullet;
-    SDL_Texture* bulletTexture = graphics.loadTexture(BULLET_IMG);
-    bullet.init(bulletTexture);
+    /*Chicken chicken;
+    chicken.texture1 = graphics.loadTexture(CHICKEN1_IMG);
+    chicken.texture2 = graphics.loadTexture(CHICKEN2_IMG);*/
 
-    Mouse mouse;
-    mouse.x = SCREEN_WIDTH/2 - 100;
-    mouse.y = SCREEN_HEIGHT - 200;
+
 
     ScrollingBackground background;
     background.setTexture(graphics.loadTexture(BACKGROUND_IMG));
 
-    Mix_Music *gMusic = graphics.loadMusic("assets\\space.mp3");
+    Mix_Music *gMusic = graphics.loadMusic("assets\\game.mp3");
     graphics.play(gMusic);
 
     Mix_Chunk *gJump = graphics.loadSound("assets\\blaster.wav");
 
     bool quit = false;
     SDL_Event e;
-    while( !quit && !gameOver(mouse)) {
+    while( !quit && !gameOver(pilot)) {
         while( SDL_PollEvent( &e ) != 0 ) {
             if( e.type == SDL_QUIT) quit = true;
+            pilot.handle();
         }
 
-        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        //const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
-        if (currentKeyStates[SDL_SCANCODE_UP]) mouse.turnNorth();
-        else if (currentKeyStates[SDL_SCANCODE_DOWN]) mouse.turnSouth();
-        else if (currentKeyStates[SDL_SCANCODE_LEFT]) mouse.turnWest();
-        else if (currentKeyStates[SDL_SCANCODE_RIGHT]) mouse.turnEast();
-        else mouse.remain();
 
-        mouse.move();
-        bullet.x_ = mouse.x + 54;
+        pilot.move();
+        pilot.handleBullet();
+        /*bullet.x_ = mouse.x + 54;
         bullet.y_ = mouse.y - 20;
-
         if (currentKeyStates[SDL_SCANCODE_SPACE]) {
             graphics.play(gJump);
             while(bullet.y_ > 0){
                 graphics.clear_();
+
                 background.scroll(1);
                 graphics.render(background);
                 graphics.render(mouse, pilot);
+
                 graphics.render(bullet);
                 graphics.presentScene();
 
-                bullet.y_ -= 30;
+                bullet.y_ -= 10;
             }
         }
+        /*chicken.x = rand() % SCREEN_WIDTH;
+        chicken.y = 0;
+        while(chicken.y < SCREEN_HEIGHT){
+            graphics.clear_();
+            background.scroll(1);
+            graphics.render(background);
 
-        graphics.render(mouse, pilot);
-        graphics.presentScene();
+            graphics.render(mouse, pilot);
+            graphics.renderChicken(chicken);
+            graphics.presentScene();
+            chicken.y += 2;
+        }*/
+
 
         background.scroll(1);
         graphics.render(background);
 
-        SDL_Delay(10);
+        renderMainObject(pilot, graphics);
+
+
+        graphics.presentScene();
+
+
+        SDL_Delay(1);
     }
     if (gMusic != nullptr) Mix_FreeMusic( gMusic );
     if (gJump != nullptr) Mix_FreeChunk(gJump);
@@ -94,23 +108,7 @@ int main(int argc, char *argv[])
     graphics.quit();
 
 
-    /*Graphics graphics;
-    graphics.init();
-
-    TTF_Font* font = graphics.loadFont("assets/Purisa-BoldOblique.ttf", 100);
-
-    SDL_Color color = {255, 255, 0, 0};
-    SDL_Texture* helloText = graphics.renderText("Hello", font, color);
-
-    graphics.renderTexture(helloText, 200, 200);
-
-    graphics.presentScene();
-    waitUntilKeyPressed();
-
-	SDL_DestroyTexture( helloText );
-    helloText = NULL;
-    TTF_CloseFont( font );
-
-    graphics.quit();*/
     return 0;
 }
+
+

@@ -2,66 +2,15 @@
 #define BASEOBJECT_H_INCLUDED
 
 #include "CommonFunction.h"
-
+#include "MainObject.h"
 using namespace std;
 
 
-struct Plane
-{
-    SDL_Texture* texture;
-    void init(SDL_Texture* _texture)
-    {
-        texture = _texture;
-    }
-};
 
-struct Mouse {
-    int x, y;
-    int dx = 0, dy = 0;
-    int speed = INITIAL_SPEED;
-    void move() {
-        x += dx;
-        y += dy;
-    }
-    void turnNorth() {
-        dy = -speed;
-        dx = 0;
-    }
-    void turnSouth() {
-        dy = speed;
-        dx = 0;
-    }
-    void turnWest() {
-        dy = 0;
-        dx = -speed;
-    }
-    void turnEast() {
-        dy = 0;
-        dx = speed;
-    }
-    void remain(){
-        dx = 0;
-        dy = 0;
-    }
-};
-bool gameOver(const Mouse& mouse) {
-        return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
-           mouse.y < 0 || mouse.y >= SCREEN_HEIGHT;
-}
 
-struct Bullet
-{
-    int x_;
-    int y_ ;
-    int is_move;
-    SDL_Texture* texture;
-    void init(SDL_Texture* _texture)
-    {
-        texture = _texture;
-    }
 
-};
-vector <Bullet*> bullet_list;
+
+
 
 struct ScrollingBackground {
     SDL_Texture* texture;
@@ -80,7 +29,9 @@ struct ScrollingBackground {
 };
 
 
-struct Graphics {
+struct Graphics
+{
+
     SDL_Renderer *renderer;
 	SDL_Window *window;
 
@@ -134,8 +85,9 @@ struct Graphics {
         SDL_RenderPresent(renderer);
     }
 
-    SDL_Texture *loadTexture(const char *filename)
+    virtual SDL_Texture *loadTexture(const char *filename)
     {
+        //screen = renderer;
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
         SDL_Texture *texture = IMG_LoadTexture(renderer, filename);
@@ -179,25 +131,8 @@ struct Graphics {
         renderTexture(background.texture, background.scrollingOffset, 0);
         renderTexture(background.texture, background.scrollingOffset - background.width, 0);
     }
-    void render(const Mouse& mouse, const Plane& plane) {
-        SDL_Rect dest;
-        dest.x = 0;
-        dest.y = 0;
-        SDL_QueryTexture(plane.texture, NULL, NULL, &dest.w, &dest.h);
 
-        SDL_Rect renderQuad = {mouse.x, mouse.y, dest.w, dest.h};
-        SDL_RenderCopy(renderer, plane.texture , &dest, &renderQuad);
-    }
-    void render(const Bullet& bullet)
-    {
-        SDL_Rect dest;
-        dest.x = 0;
-        dest.y = 0;
-        SDL_QueryTexture(bullet.texture, NULL, NULL, &dest.w, &dest.h);
 
-        SDL_Rect renderQuad = {bullet.x_, bullet.y_, dest.w, dest.h};
-        SDL_RenderCopy(renderer, bullet.texture , &dest, &renderQuad);
-    }
 
     Mix_Music *loadMusic(const char* path)
     {
@@ -233,12 +168,6 @@ struct Graphics {
         }
     }
 
-
-
-
-
-
-
     TTF_Font* loadFont(const char* path, int size)
     {
         TTF_Font* gFont = TTF_OpenFont( path, size );
@@ -265,5 +194,16 @@ struct Graphics {
     }
 
 };
+void renderMainObject(const Plane& plane, const Graphics& graphics) {
+    SDL_Rect dest;
+    dest.x = 0;
+    dest.y = 0;
+    SDL_QueryTexture(plane.texture, NULL, NULL, &dest.w, &dest.h);
+
+    SDL_Rect renderQuad = {plane.x, plane.y, dest.w, dest.h};
+    SDL_RenderCopy(graphics.renderer, plane.texture , &dest, &renderQuad);
+}
+
+
 
 #endif // BASEOBJECT_H_INCLUDED

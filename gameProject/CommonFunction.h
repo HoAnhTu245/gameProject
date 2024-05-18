@@ -10,8 +10,8 @@
 
 #define INITIAL_SPEED 4
 
-#define SCREEN_WIDTH 1500
-#define SCREEN_HEIGHT 900
+#define SCREEN_WIDTH 1350
+#define SCREEN_HEIGHT 800
 #define WINDOW_TITLE "Ho Anh Tu 23021700"
 #define BACKGROUND_IMG "img\\bgr.jpg"
 #define PLANE_IMG "img\\maybay.png"
