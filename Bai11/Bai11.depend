@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1716054477 source:c:\users\admin\onedrive\documents\code\gameproject\bai11\main.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	"graphics.h"
+	"defs.h"
+	"game.h"
+
+1716054477 c:\users\admin\onedrive\documents\code\gameproject\bai11\graphics.h
+	<SDL.h>
+	<SDL_image.h>
+	"defs.h"
+
+1716054477 c:\users\admin\onedrive\documents\code\gameproject\bai11\defs.h
+
+1716054686 c:\users\admin\onedrive\documents\code\gameproject\bai11\game.h
+
