@@ -2,7 +2,7 @@
 #define MAINOBJECT_H_INCLUDED
 
 
-#include "CommonFunction.h"
+/*#include "CommonFunction.h"
 #include "BaseObject.h"
 
 using namespace std;
@@ -33,8 +33,8 @@ struct Bullet
         y_ = 0;
         is_move = false;
     }
-    void set_x_( int xVal) {xVal = x_;}
-    void set_y_( int yVal) {yVal = y_;}
+    void set_x_( int xVal) {x_ = xVal;}
+    void set_y_( int yVal) {y_ = yVal;}
     int get_x_() {return x_;}
     int get_y_() {return y_;}
     void set_is_move(const bool& isMove) {is_move = isMove;}
@@ -47,16 +47,7 @@ struct Bullet
     }
 
 };
-void renderBullet(const Bullet& bullet, SDL_Renderer* renderer)
-    {
-        SDL_Rect dest;
-        dest.x = 0;
-        dest.y = 0;
-        SDL_QueryTexture(bullet.texture, NULL, NULL, &dest.w, &dest.h);
 
-        SDL_Rect renderQuad = {bullet.x_, bullet.y_, dest.w, dest.h};
-        SDL_RenderCopy(renderer, bullet.texture , &dest, &renderQuad);
-    }
 
 
 struct Plane
@@ -116,10 +107,10 @@ struct Plane
             //graphics.play(gJump);
             Bullet* p_bullet = new Bullet();
             SDL_Texture* bulletTexture = loadTexture(BULLET_IMG, renderer);
-            p_bullet->set_x_(x + 54);
-            p_bullet->set_y_(y - 20);
+            p_bullet->set_x_(x);
+            p_bullet->set_y_(y);
             /*p_bullet->x_ = x + 54;
-            p_bullet->y_ = y - 20;*/
+            p_bullet->y_ = y - 20;
             p_bullet->init(bulletTexture);
             bullet_list.push_back(p_bullet);
         }
@@ -131,14 +122,14 @@ struct Plane
             Bullet* p_bullet = bullet_list.at(i);
             if(p_bullet != NULL)
             {
-                if(p_bullet->get_is_move() == true)
+                while(p_bullet->get_is_move() == true)
                 {
                     p_bullet->HandleMove();
 
-                    renderBullet(*p_bullet, renderer);
-                    SDL_RenderPresent(renderer);
+                    renderBullet(*p_bullet);
+                    //SDL_RenderPresent(renderer);
                 }
-                else{
+                /*else{
                     bullet_list.erase(bullet_list.begin() + i);
                     if(p_bullet != NULL){
                         delete p_bullet;
@@ -156,7 +147,7 @@ bool gameOver(const Plane& mouse) {
     return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
            mouse.y < 0 || mouse.y >= SCREEN_HEIGHT;
 }
-
+*/
 
 
 #endif

@@ -23,13 +23,13 @@ void waitUntilKeyPressed()
 
 int main(int argc, char *argv[])
 {
-    Graphics graphics;
-    graphics.init();
+    /*Graphics graphics;
+    graphics.init();*/
 
     Plane pilot;
-    SDL_Texture* pilotTexture = graphics.loadTexture(PLANE_IMG);
+    pilot.graphics.init();
+    SDL_Texture* pilotTexture = pilot.graphics.loadTexture(PLANE_IMG);
     pilot.init(pilotTexture);
-    pilot.renderer = graphics.renderer;
 
     /*Chicken chicken;
     chicken.texture1 = graphics.loadTexture(CHICKEN1_IMG);
@@ -38,12 +38,12 @@ int main(int argc, char *argv[])
 
 
     ScrollingBackground background;
-    background.setTexture(graphics.loadTexture(BACKGROUND_IMG));
+    background.setTexture(pilot.graphics.loadTexture(BACKGROUND_IMG));
 
-    Mix_Music *gMusic = graphics.loadMusic("assets\\game.mp3");
-    graphics.play(gMusic);
+    Mix_Music *gMusic = pilot.graphics.loadMusic("assets\\game.mp3");
+    pilot.graphics.play(gMusic);
 
-    Mix_Chunk *gJump = graphics.loadSound("assets\\blaster.wav");
+    Mix_Chunk *gJump = pilot.graphics.loadSound("assets\\blaster.wav");
 
     bool quit = false;
     SDL_Event e;
@@ -52,29 +52,7 @@ int main(int argc, char *argv[])
             if( e.type == SDL_QUIT) quit = true;
             pilot.handle();
         }
-
-        //const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-
-
         pilot.move();
-        pilot.handleBullet();
-        /*bullet.x_ = mouse.x + 54;
-        bullet.y_ = mouse.y - 20;
-        if (currentKeyStates[SDL_SCANCODE_SPACE]) {
-            graphics.play(gJump);
-            while(bullet.y_ > 0){
-                graphics.clear_();
-
-                background.scroll(1);
-                graphics.render(background);
-                graphics.render(mouse, pilot);
-
-                graphics.render(bullet);
-                graphics.presentScene();
-
-                bullet.y_ -= 10;
-            }
-        }
         /*chicken.x = rand() % SCREEN_WIDTH;
         chicken.y = 0;
         while(chicken.y < SCREEN_HEIGHT){
@@ -88,14 +66,13 @@ int main(int argc, char *argv[])
             chicken.y += 2;
         }*/
 
-
         background.scroll(1);
-        graphics.render(background);
+        pilot.graphics.render(background);
 
-        renderMainObject(pilot, graphics);
+        renderMainObject(pilot);
+        pilot.handleBullet();
 
-
-        graphics.presentScene();
+        pilot.graphics.presentScene();
 
 
         SDL_Delay(1);
@@ -105,7 +82,7 @@ int main(int argc, char *argv[])
 
     SDL_DestroyTexture(pilotTexture);
     SDL_DestroyTexture(background.texture);
-    graphics.quit();
+    pilot.graphics.quit();
 
 
     return 0;
