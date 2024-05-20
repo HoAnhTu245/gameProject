@@ -8,7 +8,7 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
-#define INITIAL_SPEED 5
+#define INITIAL_SPEED 4
 
 #define SCREEN_WIDTH 1350
 #define SCREEN_HEIGHT 850
@@ -16,7 +16,9 @@
 #define BACKGROUND_IMG "img\\bgr.jpg"
 #define PLANE_IMG "img\\maybay.png"
 #define BULLET_IMG "img\\bullet.png"
-
+#define CHICKEN1_IMG "img\\chicken.png" // 130, 137
+#define CHICKEN2_IMG "img\\chicken2.png" // 130 122
+#define CHICKEN3_IMG "img\\chicken3.png" // 130 144
 
 
 #endif // COMMONFUNCTION_H_INCLUDED

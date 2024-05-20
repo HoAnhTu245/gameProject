@@ -6,12 +6,6 @@
 using namespace std;
 
 
-
-
-
-
-
-
 struct ScrollingBackground {
     SDL_Texture* texture;
     int scrollingOffset = 0;
@@ -198,7 +192,7 @@ struct Graphics
 
 
 
-
+////////////////////////////
 
 
 SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
@@ -212,7 +206,46 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
 
     return texture;
 }
+//// CHICKEN
+struct Threat
+{
 
+    int x_val;
+    int y_val;
+    bool die;
+    SDL_Texture* texture;
+    void init(SDL_Texture* _texture)
+    {
+        texture = _texture;
+    }
+    Threat()
+    {
+        x_val = 0;
+        y_val = 0;
+        die = true;
+    }
+    void set(int x, int y)
+    {
+        x_val = x;
+        y_val = y;
+    }
+    void HandleMove()
+    {
+        y_val += 1;
+    }
+    /*void renderThreat(const Threat& threat)
+    {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(threat.texture, NULL, NULL, &dest.w, &dest.h);
+
+        SDL_Rect renderQuad = {threat.x_val, threat.y_val, dest.w, dest.h};
+        SDL_RenderCopy(plane.graphics.renderer, threat.texture , &dest, &renderQuad);
+    }*/
+
+
+};
 
 
 // ĐẠN
@@ -248,11 +281,16 @@ struct Bullet
 };
 
 
+
+/////////////////////////////////////////////////////////////////////////
+
 // MÁY BAY
+int cnt = 0;
 struct Plane
 {
     Graphics graphics;
     vector<Bullet*> bullet_list;
+    vector<Threat*> threat_list;
     SDL_Texture* texture;
     int x, y;
     int dx = 0, dy = 0;
@@ -261,13 +299,22 @@ struct Plane
     {
         bullet_list = list;
     }
-    vector<Bullet*> get_bullet_list() {return bullet_list;}
+    //vector<Bullet*> get_bullet_list() {return bullet_list;}
 
     void init(SDL_Texture* _texture)
     {
         x = SCREEN_WIDTH/2 - 100;
         y = SCREEN_HEIGHT - 200;
         texture = _texture;
+    }
+    void renderMainObject() {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+
+        SDL_Rect renderQuad = {x, y, dest.w, dest.h};
+        SDL_RenderCopy(graphics.renderer, texture , &dest, &renderQuad);
     }
     void move() {
         x += dx;
@@ -309,11 +356,8 @@ struct Plane
             p_bullet->init(bulletTexture);
             p_bullet->set_x_(x + 27);
             p_bullet->set_y_(y - 20);
-            /*p_bullet->x_ = x + 54;
-            p_bullet->y_ = y - 20;*/
+
             bullet_list.push_back(p_bullet);
-            //renderBullet(*p_bullet);
-            //graphics.presentScene();
         }
     }
     void renderBullet(const Bullet& bullet)
@@ -337,8 +381,7 @@ struct Plane
                 {
 
                     renderBullet(*p_bullet);
-                    p_bullet->y_ -= 5;
-                    //SDL_RenderPresent(renderer);
+                    p_bullet->y_ -= 10;
                 }
                 else{
                     bullet_list.erase(bullet_list.begin() + i);
@@ -351,6 +394,66 @@ struct Plane
             }
         }
     }
+    void initThreat()
+    {
+        Threat* p_threat = new Threat();
+        if(p_threat != NULL)
+        {
+            SDL_Texture* threatTexture;
+            if(x % 3 == 0) threatTexture = loadTexture(CHICKEN1_IMG, graphics.renderer);
+            else if(x % 3 == 1) threatTexture = loadTexture(CHICKEN2_IMG, graphics.renderer);
+            else if(x % 3 == 2) threatTexture = loadTexture(CHICKEN3_IMG, graphics.renderer);
+            p_threat->init(threatTexture);
+            p_threat->set(rand() % (1200 - 100 + 1) + 100, 0);
+            if(cnt < 3) {
+                threat_list.push_back(p_threat);
+                cnt++;
+            }
+        }
+    }
+    void renderThreat(const Threat& threat)
+    {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(threat.texture, NULL, NULL, &dest.w, &dest.h);
+
+        SDL_Rect renderQuad = {threat.x_val, threat.y_val, dest.w, dest.h};
+        SDL_RenderCopy(graphics.renderer, threat.texture , &dest, &renderQuad);
+    }
+    void handleThreat()
+    {
+        for(int i = 0; i < threat_list.size(); i++)
+        {
+            Threat* p_threat = threat_list.at(i);
+            if(p_threat != NULL)
+            {
+                if(p_threat->y_val < SCREEN_HEIGHT)
+                {
+
+                    renderThreat(*p_threat);
+                    p_threat->y_val += 2;
+                    //SDL_RenderPresent(renderer);
+                }
+                else{
+                    threat_list.erase(threat_list.begin() + i);
+                    if(p_threat != NULL){
+                        delete p_threat;
+                        p_threat = NULL;
+                    }
+                    cnt--;
+                }
+
+            }
+        }
+    }
+    /*void Gameloop(Bullet& bullet, Threat& threat)
+    {
+        if(threat.x_val < bullet.x_ && bullet.x_ < (threat.x_val + 130)){
+            threat.die = true;
+        }
+        else threat.die = false;
+    }*/
 
 };
 
@@ -359,16 +462,5 @@ bool gameOver(const Plane& mouse) {
     return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
            mouse.y < 0 || mouse.y >= SCREEN_HEIGHT;
 }
-void renderMainObject(const Plane& plane) {
-    SDL_Rect dest;
-    dest.x = 0;
-    dest.y = 0;
-    SDL_QueryTexture(plane.texture, NULL, NULL, &dest.w, &dest.h);
-
-    SDL_Rect renderQuad = {plane.x, plane.y, dest.w, dest.h};
-    SDL_RenderCopy(plane.graphics.renderer, plane.texture , &dest, &renderQuad);
-}
-
-
 
 #endif // BASEOBJECT_H_INCLUDED

@@ -21,20 +21,17 @@ void waitUntilKeyPressed()
     }
 }
 
+
+
 int main(int argc, char *argv[])
 {
-    /*Graphics graphics;
-    graphics.init();*/
-
     Plane pilot;
     pilot.graphics.init();
     SDL_Texture* pilotTexture = pilot.graphics.loadTexture(PLANE_IMG);
     pilot.init(pilotTexture);
 
-    /*Chicken chicken;
-    chicken.texture1 = graphics.loadTexture(CHICKEN1_IMG);
-    chicken.texture2 = graphics.loadTexture(CHICKEN2_IMG);*/
 
+    //vector<Threat*> threats_list = Make_Threat_List();
 
 
     ScrollingBackground background;
@@ -53,27 +50,16 @@ int main(int argc, char *argv[])
             pilot.handle();
         }
         pilot.move();
-        /*chicken.x = rand() % SCREEN_WIDTH;
-        chicken.y = 0;
-        while(chicken.y < SCREEN_HEIGHT){
-            graphics.clear_();
-            background.scroll(1);
-            graphics.render(background);
-
-            graphics.render(mouse, pilot);
-            graphics.renderChicken(chicken);
-            graphics.presentScene();
-            chicken.y += 2;
-        }*/
 
         background.scroll(1);
         pilot.graphics.render(background);
 
-        renderMainObject(pilot);
+        pilot.initThreat();
+        pilot.handleThreat();
+        pilot.renderMainObject();
         pilot.handleBullet();
 
         pilot.graphics.presentScene();
-
 
         SDL_Delay(1);
     }
