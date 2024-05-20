@@ -10,18 +10,11 @@
 
 using namespace std;
 
-void waitUntilKeyPressed()
-{
-    SDL_Event e;
-    while (true) {
-        if ( SDL_PollEvent(&e) != 0 &&
-             (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
-            return;
-        SDL_Delay(100);
-    }
+int num_die = 0;
+bool gameOver(const Plane& mouse) {
+    return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
+           mouse.y < 0 || mouse.y >= SCREEN_HEIGHT || num_die > 3;
 }
-
-
 
 int main(int argc, char *argv[])
 {
@@ -30,20 +23,16 @@ int main(int argc, char *argv[])
     SDL_Texture* pilotTexture = pilot.graphics.loadTexture(PLANE_IMG);
     pilot.init(pilotTexture);
 
-
-    //vector<Threat*> threats_list = Make_Threat_List();
-
-
     ScrollingBackground background;
     background.setTexture(pilot.graphics.loadTexture(BACKGROUND_IMG));
 
     Mix_Music *gMusic = pilot.graphics.loadMusic("assets\\game.mp3");
     pilot.graphics.play(gMusic);
-
     Mix_Chunk *gJump = pilot.graphics.loadSound("assets\\blaster.wav");
 
     bool quit = false;
     SDL_Event e;
+    bool game_over;
     while( !quit && !gameOver(pilot) && check == 0) {
         while( SDL_PollEvent( &e ) != 0 ) {
             if( e.type == SDL_QUIT) quit = true;
@@ -56,22 +45,33 @@ int main(int argc, char *argv[])
 
         pilot.initThreat();
         pilot.handleThreat();
+
         pilot.renderMainObject();
+
         pilot.handleBullet();
+
         pilot.Collision();
+        if(check){
+            num_die++;
+            if(num_die <= 3)
+            {
+                pilot.init(pilotTexture);
+                check = 0;
+                SDL_Delay(10);
+            }
+            else quit = true;
+        }
 
         pilot.graphics.presentScene();
-
         SDL_Delay(1);
     }
+
     if (gMusic != nullptr) Mix_FreeMusic( gMusic );
     if (gJump != nullptr) Mix_FreeChunk(gJump);
 
     SDL_DestroyTexture(pilotTexture);
     SDL_DestroyTexture(background.texture);
     pilot.graphics.quit();
-
-
     return 0;
 }
 

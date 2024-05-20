@@ -5,6 +5,16 @@
 #include "MainObject.h"
 using namespace std;
 
+void waitUntilKeyPressed()
+{
+    SDL_Event e;
+    while (true) {
+        if ( SDL_PollEvent(&e) != 0)
+             if(e.type == SDL_MOUSEBUTTONDOWN)
+            return;
+        SDL_Delay(100);
+    }
+}
 
 struct ScrollingBackground {
     SDL_Texture* texture;
@@ -248,16 +258,6 @@ struct Threat
     {
         y_val += 1;
     }
-    /*void renderThreat(const Threat& threat)
-    {
-        SDL_Rect dest;
-        dest.x = 0;
-        dest.y = 0;
-        SDL_QueryTexture(threat.texture, NULL, NULL, &dest.w, &dest.h);
-
-        SDL_Rect renderQuad = {threat.x_val, threat.y_val, dest.w, dest.h};
-        SDL_RenderCopy(plane.graphics.renderer, threat.texture , &dest, &renderQuad);
-    }*/
 
 
 };
@@ -300,25 +300,31 @@ struct Bullet
 /////////////////////////////////////////////////////////////////////////
 
 // MÁY BAY
+
 int check = 0;
 int cnt = 0;
 struct Plane
 {
     Graphics graphics;
     Fire fire;
+
     vector<Bullet*> bullet_list;
     vector<Threat*> threat_list;
+
     SDL_Texture* texture;
     int x, y;
-    int x_bullet;
-    int x_threat;
     int dx = 0, dy = 0;
     int speed = INITIAL_SPEED;
+
+    int come_back_time;
+    void set_comeback_time(const int& cb_time)
+    {
+        come_back_time = cb_time;
+    }
     void set_bullet_list(vector<Bullet*> list)
     {
         bullet_list = list;
     }
-    //vector<Bullet*> get_bullet_list() {return bullet_list;}
 
     void init(SDL_Texture* _texture)
     {
@@ -453,6 +459,9 @@ struct Plane
                         {
                             setFire(p_threat->x_val, p_threat->y_val);
                             renderFire(fire);
+                            graphics.presentScene();
+
+                            waitUntilKeyPressed();
                             check = 1;
                             break;
                         }
@@ -496,23 +505,7 @@ struct Plane
             }
         }
     }
-    /*void RemoveBullet(const int& idx)
-    {
 
-        if(bullet_list.size() > 0 && idx < bullet_list.size())
-        {
-            for(int i = 0; i < bullet_list.size(); i++)
-            {
-                Bullet* p_bullet = bullet_list.at(idx);
-                bullet_list.erase(bullet_list.begin() + idx);
-                if(p_bullet != NULL)
-                {
-                    delete p_bullet;
-                    p_bullet = NULL;
-                }
-            }
-        }
-    }*/
     void Collision()
     {
         for(int i = 0; i < bullet_list.size(); i++)
@@ -543,11 +536,5 @@ struct Plane
 
 };
 
-
-
-bool gameOver(const Plane& mouse) {
-    return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
-           mouse.y < 0 || mouse.y >= SCREEN_HEIGHT;
-}
 
 #endif // BASEOBJECT_H_INCLUDED
