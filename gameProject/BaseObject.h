@@ -122,8 +122,8 @@ struct Graphics
     }
 
     void render(const ScrollingBackground& background) {
-        renderTexture(background.texture, background.scrollingOffset, 0);
-        renderTexture(background.texture, background.scrollingOffset - background.width, 0);
+        renderTexture(background.texture,background.scrollingOffset, 0);
+        renderTexture(background.texture,background.scrollingOffset - background.width, 0);
     }
 
 
@@ -206,6 +206,21 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
 
     return texture;
 }
+///// VỤ NỔ
+struct Fire
+{
+    int pos_x;
+    int pos_y;
+    SDL_Texture* texture;
+    void init(SDL_Texture* _texture)
+    {
+        texture = _texture;
+    }
+
+};
+
+
+
 //// CHICKEN
 struct Threat
 {
@@ -222,7 +237,7 @@ struct Threat
     {
         x_val = 0;
         y_val = 0;
-        die = true;
+        die = false;
     }
     void set(int x, int y)
     {
@@ -285,14 +300,18 @@ struct Bullet
 /////////////////////////////////////////////////////////////////////////
 
 // MÁY BAY
+int check = 0;
 int cnt = 0;
 struct Plane
 {
     Graphics graphics;
+    Fire fire;
     vector<Bullet*> bullet_list;
     vector<Threat*> threat_list;
     SDL_Texture* texture;
     int x, y;
+    int x_bullet;
+    int x_threat;
     int dx = 0, dy = 0;
     int speed = INITIAL_SPEED;
     void set_bullet_list(vector<Bullet*> list)
@@ -315,6 +334,15 @@ struct Plane
 
         SDL_Rect renderQuad = {x, y, dest.w, dest.h};
         SDL_RenderCopy(graphics.renderer, texture , &dest, &renderQuad);
+    }
+    void renderFire(const Fire& fire) {
+        SDL_Rect dest;
+        dest.x = 0;
+        dest.y = 0;
+        SDL_QueryTexture(fire.texture, NULL, NULL, &dest.w, &dest.h);
+
+        SDL_Rect renderQuad = {fire.pos_x, fire.pos_y, dest.w, dest.h};
+        SDL_RenderCopy(graphics.renderer, fire.texture , &dest, &renderQuad);
     }
     void move() {
         x += dx;
@@ -356,9 +384,17 @@ struct Plane
             p_bullet->init(bulletTexture);
             p_bullet->set_x_(x + 27);
             p_bullet->set_y_(y - 20);
-
-            bullet_list.push_back(p_bullet);
+            if(bullet_list.size() < 7){
+                bullet_list.push_back(p_bullet);
+            }
         }
+    }
+    void setFire(int x1, int y1)
+    {
+        SDL_Texture* FireTexture = loadTexture(FIRE_IMG, graphics.renderer);
+        fire.init(FireTexture);
+        fire.pos_x = x1;
+        fire.pos_y = y1;
     }
     void renderBullet(const Bullet& bullet)
     {
@@ -370,30 +406,7 @@ struct Plane
         SDL_Rect renderQuad = {bullet.x_, bullet.y_, dest.w, dest.h};
         SDL_RenderCopy(graphics.renderer, bullet.texture , &dest, &renderQuad);
     }
-    void handleBullet()
-    {
-        for(int i = 0; i < bullet_list.size(); i++)
-        {
-            Bullet* p_bullet = bullet_list.at(i);
-            if(p_bullet != NULL)
-            {
-                if(p_bullet->y_ > 0)
-                {
 
-                    renderBullet(*p_bullet);
-                    p_bullet->y_ -= 10;
-                }
-                else{
-                    bullet_list.erase(bullet_list.begin() + i);
-                    if(p_bullet != NULL){
-                        delete p_bullet;
-                        p_bullet = NULL;
-                    }
-                }
-
-            }
-        }
-    }
     void initThreat()
     {
         Threat* p_threat = new Threat();
@@ -405,7 +418,8 @@ struct Plane
             else if(x % 3 == 2) threatTexture = loadTexture(CHICKEN3_IMG, graphics.renderer);
             p_threat->init(threatTexture);
             p_threat->set(rand() % (1200 - 100 + 1) + 100, 0);
-            if(cnt < 3) {
+
+            if(cnt < 4) {
                 threat_list.push_back(p_threat);
                 cnt++;
             }
@@ -421,6 +435,8 @@ struct Plane
         SDL_Rect renderQuad = {threat.x_val, threat.y_val, dest.w, dest.h};
         SDL_RenderCopy(graphics.renderer, threat.texture , &dest, &renderQuad);
     }
+
+    int k = 0;
     void handleThreat()
     {
         for(int i = 0; i < threat_list.size(); i++)
@@ -428,18 +444,27 @@ struct Plane
             Threat* p_threat = threat_list.at(i);
             if(p_threat != NULL)
             {
-                if(p_threat->y_val < SCREEN_HEIGHT)
+                if(p_threat->y_val < SCREEN_HEIGHT )
                 {
-
                     renderThreat(*p_threat);
-                    p_threat->y_val += 2;
-                    //SDL_RenderPresent(renderer);
+                    p_threat->y_val += 1;
+                    if(p_threat->x_val < x && p_threat->x_val + 130 > x &&
+                        p_threat->y_val < y && p_threat->y_val + 122 > y)
+                        {
+                            setFire(p_threat->x_val, p_threat->y_val);
+                            renderFire(fire);
+                            check = 1;
+                            break;
+                        }
                 }
+
                 else{
                     threat_list.erase(threat_list.begin() + i);
                     if(p_threat != NULL){
+                        p_threat->die = true;
                         delete p_threat;
                         p_threat = NULL;
+                        check = 1;
                     }
                     cnt--;
                 }
@@ -447,15 +472,77 @@ struct Plane
             }
         }
     }
-    /*void Gameloop(Bullet& bullet, Threat& threat)
+    void handleBullet()
     {
-        if(threat.x_val < bullet.x_ && bullet.x_ < (threat.x_val + 130)){
-            threat.die = true;
+        for(int i = 0; i < bullet_list.size(); i++)
+        {
+            Bullet* p_bullet = bullet_list.at(i);
+            if(p_bullet != NULL)
+            {
+                if(p_bullet->y_ > 0)
+                {
+                    renderBullet(*p_bullet);
+                    p_bullet->y_ -= 10;
+                }
+
+                else{
+                    bullet_list.erase(bullet_list.begin() + i);
+                    if(p_bullet != NULL){
+                        delete p_bullet;
+                        p_bullet = NULL;
+                    }
+                }
+
+            }
         }
-        else threat.die = false;
+    }
+    /*void RemoveBullet(const int& idx)
+    {
+
+        if(bullet_list.size() > 0 && idx < bullet_list.size())
+        {
+            for(int i = 0; i < bullet_list.size(); i++)
+            {
+                Bullet* p_bullet = bullet_list.at(idx);
+                bullet_list.erase(bullet_list.begin() + idx);
+                if(p_bullet != NULL)
+                {
+                    delete p_bullet;
+                    p_bullet = NULL;
+                }
+            }
+        }
     }*/
+    void Collision()
+    {
+        for(int i = 0; i < bullet_list.size(); i++)
+        {
+            Bullet* p_bullet = bullet_list.at(i);
+            if(p_bullet != NULL)
+            {
+                for(int j = 0; j < threat_list.size(); j++)
+                {
+                    Threat* p_threat = threat_list.at(j);
+                    if(p_threat != NULL)
+                    {
+                        if(p_threat->x_val < p_bullet->x_ && p_threat->x_val + 130 > p_bullet->x_ &&
+                               p_threat->y_val < p_bullet->y_ && p_threat->y_val + 122 > p_bullet->y_)
+                        {
+                            setFire(p_threat->x_val, p_threat->y_val);
+                            renderFire(fire);
+                            delete p_threat;
+                            threat_list.erase(threat_list.begin() + j);
+                            --cnt;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 
 };
+
 
 
 bool gameOver(const Plane& mouse) {

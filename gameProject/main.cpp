@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     bool quit = false;
     SDL_Event e;
-    while( !quit && !gameOver(pilot)) {
+    while( !quit && !gameOver(pilot) && check == 0) {
         while( SDL_PollEvent( &e ) != 0 ) {
             if( e.type == SDL_QUIT) quit = true;
             pilot.handle();
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
         pilot.handleThreat();
         pilot.renderMainObject();
         pilot.handleBullet();
+        pilot.Collision();
 
         pilot.graphics.presentScene();
 
