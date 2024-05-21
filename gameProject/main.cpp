@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     Mix_Music *gMusic = pilot.graphics.loadMusic("assets\\game.mp3");
     pilot.graphics.play(gMusic);
     Mix_Chunk *gJump = pilot.graphics.loadSound("assets\\blaster.wav");
+    Mix_Chunk *gBoom = pilot.graphics.loadSound("assets\\boom.wav");
 
     bool quit = false;
     SDL_Event e;
@@ -72,6 +73,25 @@ int main(int argc, char *argv[])
     SDL_DestroyTexture(pilotTexture);
     SDL_DestroyTexture(background.texture);
     pilot.graphics.quit();
+
+    /*Graphics graphics;
+    graphics.init();
+
+    TTF_Font* font = graphics.loadFont("assets/Purisa-BoldOblique.ttf", 100);
+
+    SDL_Color color = {255, 255, 0, 0};
+    SDL_Texture* helloText = graphics.renderText("Hello", font, color);
+
+    graphics.renderTexture(helloText, 200, 200);
+
+    graphics.presentScene();
+    waitUntilKeyPressed();
+
+	/*SDL_DestroyTexture( helloText );
+    helloText = NULL;
+    TTF_CloseFont( font );
+
+    graphics.quit();*/
     return 0;
 }
 

@@ -2,7 +2,7 @@
 #define BASEOBJECT_H_INCLUDED
 
 #include "CommonFunction.h"
-#include "MainObject.h"
+
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -172,12 +172,14 @@ struct Graphics
         }
     }
 
+
     TTF_Font* loadFont(const char* path, int size)
     {
         TTF_Font* gFont = TTF_OpenFont( path, size );
         if (gFont == nullptr) {
             SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Load font %s", TTF_GetError());
         }
+        return gFont;
     }
 
     SDL_Texture* renderText(const char* text, TTF_Font* font, SDL_Color textColor)
@@ -457,10 +459,10 @@ struct Plane
                     if(p_threat->x_val < x && p_threat->x_val + 130 > x &&
                         p_threat->y_val < y && p_threat->y_val + 122 > y)
                         {
+                            graphics.play(graphics.loadSound("assets\\boom.wav"));
                             setFire(p_threat->x_val, p_threat->y_val);
                             renderFire(fire);
                             graphics.presentScene();
-
                             waitUntilKeyPressed();
                             check = 1;
                             break;
@@ -521,6 +523,7 @@ struct Plane
                         if(p_threat->x_val < p_bullet->x_ && p_threat->x_val + 130 > p_bullet->x_ &&
                                p_threat->y_val < p_bullet->y_ && p_threat->y_val + 122 > p_bullet->y_)
                         {
+                            graphics.play(graphics.loadSound("assets\\chicken_noise.wav"));
                             setFire(p_threat->x_val, p_threat->y_val);
                             renderFire(fire);
                             delete p_threat;
