@@ -72,6 +72,11 @@ struct Graphics
         {
             logErrorAndExit( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         }
+        //Init sdl_ttf
+        if (TTF_Init() == -1) {
+            logErrorAndExit("SDL_ttf could not initialize! SDL_ttf Error: ",
+                             TTF_GetError());
+        }
     }
     void clear_()
     {
@@ -218,6 +223,63 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
 
     return texture;
 }
+//// SINH MỆNH CHO NHÂN VẬT
+struct Heart
+{
+    //Plane plane;
+    int number_;
+    int xHeart;
+    int yHeart;
+    SDL_Texture* texture;
+    std::vector<int> pos_list_;
+    void SetNum(const int& num){ number_ = num; }
+    void Init(SDL_Renderer* renderer)
+    {
+        xHeart = 0; yHeart = 0;
+        texture = loadTexture("img\\heart.png", renderer);
+        number_ = 3;
+        if(pos_list_.size() > 0)
+        {
+            pos_list_.clear();
+        }
+        AddPos(10);
+        AddPos(60);
+        AddPos(110);
+    }
+    void AddPos(const int& xp)
+    {
+        pos_list_.push_back(xp);
+    }
+    void Decrease()
+    {
+        number_--;
+        pos_list_.pop_back();
+    }
+    void renderTexture(int x, int y, SDL_Renderer* renderer)
+    {
+        SDL_Rect dest;
+        dest.x = x;
+        dest.y = y;
+        SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+        SDL_RenderCopy(renderer, texture, NULL , &dest);
+    }
+    void Show(SDL_Renderer* renderer)
+    {
+        for(int i = 0; i < pos_list_.size(); i++)
+        {
+            xHeart = pos_list_.at(i);
+            yHeart = 5;
+            renderTexture(xHeart, yHeart, renderer);
+        }
+    }
+};
+
+
+
+
+
+
+
 ///// VỤ NỔ
 struct Fire
 {
@@ -312,21 +374,14 @@ struct Plane
 
     vector<Bullet*> bullet_list;
     vector<Threat*> threat_list;
+    vector<Heart*> heart_list;
 
     SDL_Texture* texture;
     int x, y;
     int dx = 0, dy = 0;
     int speed = INITIAL_SPEED;
 
-    int come_back_time;
-    void set_comeback_time(const int& cb_time)
-    {
-        come_back_time = cb_time;
-    }
-    void set_bullet_list(vector<Bullet*> list)
-    {
-        bullet_list = list;
-    }
+
 
     void init(SDL_Texture* _texture)
     {
