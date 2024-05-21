@@ -381,14 +381,13 @@ struct Plane
     int dx = 0, dy = 0;
     int speed = INITIAL_SPEED;
 
-
-
     void init(SDL_Texture* _texture)
     {
         x = SCREEN_WIDTH/2 - 100;
         y = SCREEN_HEIGHT - 200;
         texture = _texture;
     }
+
     void renderMainObject() {
         SDL_Rect dest;
         dest.x = 0;
@@ -435,10 +434,10 @@ struct Plane
     {
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
-        if (currentKeyStates[SDL_SCANCODE_UP]) turnNorth();
-        else if (currentKeyStates[SDL_SCANCODE_DOWN]) turnSouth();
-        else if (currentKeyStates[SDL_SCANCODE_LEFT]) turnWest();
-        else if (currentKeyStates[SDL_SCANCODE_RIGHT]) turnEast();
+        if (y > 0 && currentKeyStates[SDL_SCANCODE_UP]) turnNorth();
+        else if (y + 117 < SCREEN_HEIGHT && currentKeyStates[SDL_SCANCODE_DOWN]) turnSouth();
+        else if (x > 0 && currentKeyStates[SDL_SCANCODE_LEFT]) turnWest();
+        else if (x + 81 < SCREEN_WIDTH && currentKeyStates[SDL_SCANCODE_RIGHT]) turnEast();
         else remain();
         if (currentKeyStates[SDL_SCANCODE_SPACE]) {
             graphics.play(graphics.loadSound("assets\\blaster.wav"));
@@ -510,7 +509,7 @@ struct Plane
                 if(p_threat->y_val < SCREEN_HEIGHT )
                 {
                     renderThreat(*p_threat);
-                    p_threat->y_val += 1;
+                    p_threat->y_val += 2;
                     if(p_threat->x_val < x && p_threat->x_val + 130 > x &&
                         p_threat->y_val < y && p_threat->y_val + 122 > y)
                         {
@@ -518,6 +517,9 @@ struct Plane
                             setFire(p_threat->x_val, p_threat->y_val);
                             renderFire(fire);
                             graphics.presentScene();
+                            delete p_threat;
+                            threat_list.erase(threat_list.begin() + i);
+                            --cnt;
                             waitUntilKeyPressed();
                             check = 1;
                             break;

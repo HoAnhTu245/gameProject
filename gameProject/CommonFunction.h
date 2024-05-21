@@ -13,8 +13,8 @@
 #define SCREEN_WIDTH 1350
 #define SCREEN_HEIGHT 850
 #define WINDOW_TITLE "Ho Anh Tu 23021700"
-#define BACKGROUND_IMG "img\\bgr.jpg"
-#define PLANE_IMG "img\\maybay.png"
+#define BACKGROUND_IMG "img\\back.jpg"
+#define PLANE_IMG "img\\maybay.png" // 80 117
 #define BULLET_IMG "img\\bullet.png"
 #define CHICKEN1_IMG "img\\chicken.png" // 130, 137
 #define CHICKEN2_IMG "img\\chicken2.png" // 130 122

@@ -10,11 +10,18 @@
 
 using namespace std;
 
-int num_die = 0;
-bool gameOver(const Plane& mouse) {
-    return mouse.x < 0 || mouse.x >= SCREEN_WIDTH ||
-           mouse.y < 0 || mouse.y >= SCREEN_HEIGHT || num_die > 3;
+void waitUntilEnd()
+{
+    SDL_Event e;
+    while (true) {
+        if ( SDL_PollEvent(&e) != 0)
+             if(e.type == SDL_QUIT)
+
+            return;
+        SDL_Delay(100);
+    }
 }
+int num_die = 0;
 
 int main(int argc, char *argv[])
 {
@@ -34,11 +41,16 @@ int main(int argc, char *argv[])
     Mix_Chunk *gJump = pilot.graphics.loadSound("assets\\blaster.wav");
     Mix_Chunk *gBoom = pilot.graphics.loadSound("assets\\boom.wav");
     Mix_Chunk *gChicken = pilot.graphics.loadSound("assets\\chicken_noise.wav");
+    Mix_Chunk *winGame = pilot.graphics.loadSound("assets\\win.wav");
+    Mix_Chunk *loseGame = pilot.graphics.loadSound("assets\\loseGame.wav");
+
+    TTF_Font* font = pilot.graphics.loadFont("assets\\BebasNeue-Regular.ttf", 50);
+    SDL_Color color = {255, 255, 255};
 
     bool quit = false;
     SDL_Event e;
     bool game_over;
-    while( !quit && !gameOver(pilot) && check == 0) {
+    while( !quit && check == 0) {
         while( SDL_PollEvent( &e ) != 0 ) {
             if( e.type == SDL_QUIT) quit = true;
             pilot.handle();
@@ -57,17 +69,46 @@ int main(int argc, char *argv[])
 
         heart.Show(pilot.graphics.renderer);
 
+        string str_time = "TIME: ";
+        Uint32 time_val = SDL_GetTicks() / 1000;
+        Uint32 val_time = 30 - time_val;
+        if(val_time <= 0)
+        {
+            pilot.graphics.renderTexture(pilot.graphics.loadTexture("img\\youWin.jpg"), 0, 0);
+            pilot.graphics.presentScene();
+            pilot.graphics.play(winGame);
+            waitUntilEnd();
+            quit = true;
+            break;
+        }
+        else
+        {
+            string str_val = to_string(val_time);
+            str_time += str_val;
+            SDL_Texture* timeText = pilot.graphics.renderText(str_time.c_str(), font, color);
+            pilot.graphics.renderTexture(timeText, 1170, 5);
+        }
+
         pilot.Collision();
+
         if(check){
             num_die++;
             heart.Decrease();
             if(num_die <= 3)
             {
+                pilot.graphics.clear_();
                 pilot.init(pilotTexture);
                 check = 0;
                 SDL_Delay(10);
             }
-            else quit = true;
+            else if(num_die > 3){
+                pilot.graphics.renderTexture(pilot.graphics.loadTexture("img\\youLose.jpg"), 0, 0);
+                pilot.graphics.presentScene();
+                pilot.graphics.play(loseGame);
+                waitUntilEnd();
+                quit = true;
+                break;
+            }
         }
 
         pilot.graphics.presentScene();
@@ -75,6 +116,8 @@ int main(int argc, char *argv[])
     }
 
     if (gMusic != nullptr) Mix_FreeMusic( gMusic );
+    if (loseGame != nullptr) Mix_FreeChunk( loseGame );
+    if (winGame != nullptr)  Mix_FreeChunk( winGame );
     if (gJump != nullptr) Mix_FreeChunk(gJump);
     if (gBoom != nullptr) Mix_FreeChunk(gBoom);
     if (gChicken != nullptr) Mix_FreeChunk(gChicken);
