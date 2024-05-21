@@ -12,7 +12,7 @@ void waitUntilKeyPressed()
         if ( SDL_PollEvent(&e) != 0)
              if(e.type == SDL_MOUSEBUTTONDOWN)
             return;
-        SDL_Delay(100);
+        SDL_Delay(10);
     }
 }
 
@@ -50,8 +50,7 @@ struct Graphics
             logErrorAndExit("SDL_Init", SDL_GetError());
 
         window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-        //full screen
-        //window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
         if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
 
         if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
@@ -59,8 +58,6 @@ struct Graphics
 
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED |
                                               SDL_RENDERER_PRESENTVSYNC);
-        //Khi chạy trong máy ảo (ví dụ phòng máy ở trường)
-        //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
 
         if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
 
@@ -96,7 +93,6 @@ struct Graphics
 
     virtual SDL_Texture *loadTexture(const char *filename)
     {
-        //screen = renderer;
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
         SDL_Texture *texture = IMG_LoadTexture(renderer, filename);
@@ -207,14 +203,11 @@ struct Graphics
 };
 
 
-
-
 ////////////////////////////
 
 
 SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
 {
-    //screen = renderer;
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
     SDL_Texture *texture = IMG_LoadTexture(renderer, filename);
@@ -226,7 +219,6 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer* renderer)
 //// SINH MỆNH CHO NHÂN VẬT
 struct Heart
 {
-    //Plane plane;
     int number_;
     int xHeart;
     int yHeart;
