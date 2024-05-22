@@ -126,7 +126,6 @@ struct Graphics
     void quit()
     {
         IMG_Quit();
-
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -584,6 +583,19 @@ struct Plane
 
             }
         }
+    }
+    void Endgame()
+    {
+        SDL_Texture* threatTexture1 = loadTexture(CHICKEN1_IMG, graphics.renderer);
+        SDL_Texture* threatTexture2 = loadTexture(CHICKEN2_IMG, graphics.renderer);
+        SDL_Texture* threatTexture3 = loadTexture(CHICKEN3_IMG, graphics.renderer);
+        SDL_Texture* FireTexture = loadTexture(FIRE_IMG, graphics.renderer);
+        SDL_Texture* bulletTexture = loadTexture(BULLET_IMG, graphics.renderer);
+        SDL_DestroyTexture(threatTexture1);
+        SDL_DestroyTexture(threatTexture2);
+        SDL_DestroyTexture(threatTexture3);
+        SDL_DestroyTexture(FireTexture);
+        SDL_DestroyTexture(bulletTexture);
     }
 
 };

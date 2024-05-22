@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     bool quit = false;
     SDL_Event e;
     bool game_over;
+    SDL_Texture* timeText;
     if(STATUS == 1){
         while( !quit && check == 0) {
             while( SDL_PollEvent( &e ) != 0 ) {
@@ -92,12 +93,13 @@ int main(int argc, char *argv[])
 
             string str_time = "TIME: ";
             Uint32 time_val = SDL_GetTicks() / 1000;
-            Uint32 val_time = 30 - time_val;
+            Uint32 val_time = 26 - time_val;
             if(val_time <= 0)
             {
+                pilot.graphics.clear_();
+                pilot.graphics.play(winGame);
                 pilot.graphics.renderTexture(pilot.graphics.loadTexture("img\\youWin.jpg"), 0, 0);
                 pilot.graphics.presentScene();
-                pilot.graphics.play(winGame);
                 waitUntilEnd();
                 quit = true;
                 break;
@@ -106,7 +108,7 @@ int main(int argc, char *argv[])
             {
                 string str_val = to_string(val_time);
                 str_time += str_val;
-                SDL_Texture* timeText = pilot.graphics.renderText(str_time.c_str(), font, color);
+                timeText = pilot.graphics.renderText(str_time.c_str(), font, color);
                 pilot.graphics.renderTexture(timeText, 1170, 5);
             }
 
@@ -118,7 +120,6 @@ int main(int argc, char *argv[])
                 if(num_die <= 3)
                 {
                     pilot.graphics.clear_();
-                    pilot.init(pilotTexture);
                     check = 0;
                     SDL_Delay(10);
                 }
@@ -145,9 +146,15 @@ int main(int argc, char *argv[])
         if (gBoom != nullptr) Mix_FreeChunk(gBoom);
         if (gChicken != nullptr) Mix_FreeChunk(gChicken);
 
+        SDL_DestroyTexture(timeText);
+        TTF_CloseFont( font );
+        timeText = NULL;
+
+        pilot.Endgame();
         SDL_DestroyTexture(pilotTexture);
         SDL_DestroyTexture(background.texture);
         SDL_DestroyTexture(heart.texture);
+        SDL_DestroyTexture(startTexture);
         pilot.graphics.quit();
     }
 
