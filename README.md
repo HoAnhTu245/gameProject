@@ -9,9 +9,11 @@
    - Ngoài ra game còn có tính năng hiện thị đếm thời gian ngược và tạo ra 3 lượt chơi cho người chơi.
    - Nhân vật chính có thể bắn được súng, tạo ra được va chạm giữa nhân vật, đạn với gà (tạo ra được hiệu ứng vụ nổ).
    - Tạo ra được các đối tượng Gà khác nhau tạo cảm giác thú vị.
- 5. Nguồn tham khảo cho game: Em tự học trên:
-   - File LTNC-Tài liệu bổ sung của cô Trần Thị Minh Châu.
-   - Qua kênh Phát triển phần mềm 123A-Z trên Youtube.
+ 5. Nguồn tham khảo cho game:
+    Em tự học trên:
+      - File LTNC-Tài liệu bổ sung của cô Trần Thị Minh Châu.
+      - Qua kênh Phát triển phần mềm 123A-Z trên Youtube.
+    
  Game là do em tự học và phát triển theo mong muốn của bản thân. Không sao chép hay tham khảo từ bất kì nguồn nào khác. Em xin cảm ơn.
      
 
