@@ -1,7 +1,7 @@
 # gameProject
 1. THÔNG TIN SINH VIÊN:
-   HỌ TÊN: HỒ ANH TÚ
-   MÃ SINH VIÊN: 23021700
+   - HỌ TÊN: HỒ ANH TÚ
+   - MÃ SINH VIÊN: 23021700
 2. CHỦ ĐỀ GAME: Game bắn gà, mục tiêu là phải bảo toàn được tính mạng trong vòng 30 giây, bạn được cung cấp 3 sinh mệnh. Bạn có thể bị mất 1 sinh mệnh khi bạn va chạm với 1 con gà hoặc để cho 1 con gà đột nhập vào căn cứ (trôi xuống màn hình).
 3. Ngưỡng điểm mong muốn: 8
 4. Lí do:
